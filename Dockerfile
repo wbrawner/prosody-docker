@@ -6,9 +6,12 @@ FROM debian:12
 
 MAINTAINER Prosody Developers <developers@prosody.im>
 
+# Add prosody repository
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && curl -Lo /etc/apt/sources.list.d/prosody.sources https://prosody.im/files/prosody.sources
+
 # Install dependencies
-RUN apt-get install -y --no-install-recommends curl
-RUN curl -Lo /etc/apt/sources.list.d/prosody.sources https://prosody.im/files/prosody.sources
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         lsb-base \
