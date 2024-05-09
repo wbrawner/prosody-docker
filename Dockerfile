@@ -2,11 +2,13 @@
 # Build a dockerfile for Prosody XMPP server
 ################################################################################
 
-FROM debian:10
+FROM debian:12
 
 MAINTAINER Prosody Developers <developers@prosody.im>
 
 # Install dependencies
+RUN apt-get install -y --no-install-recommends curl
+RUN curl -Lo /etc/apt/sources.list.d/prosody.sources https://prosody.im/files/prosody.sources
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         lsb-base \
@@ -28,13 +30,13 @@ RUN apt-get update \
         lua5.1 \
         lua5.2 \
         openssl \
+        prosody \
         ca-certificates \
         ssl-cert \
     && rm -rf /var/lib/apt/lists/*
 
 # Install and configure prosody
-COPY ./prosody.deb /tmp/prosody.deb
-RUN dpkg -i /tmp/prosody.deb \
+RUN apt-get install -y --no-recommends prosody \
     && sed -i '1s/^/daemonize = false;\n/' /etc/prosody/prosody.cfg.lua \
     && perl -i -pe 'BEGIN{undef $/;} s/^log = {.*?^}$/log = {\n    {levels = {min = "info"}, to = "console"};\n}/smg' /etc/prosody/prosody.cfg.lua
 
