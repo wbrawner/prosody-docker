@@ -9,6 +9,8 @@ MAINTAINER Prosody Developers <developers@prosody.im>
 # Add prosody repository
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl \
+        ca-certificates \
+        ssl-cert \
     && curl -Lo /etc/apt/sources.list.d/prosody.sources https://prosody.im/files/prosody.sources
 
 # Install dependencies
@@ -17,9 +19,9 @@ RUN apt-get update \
         lsb-base \
         procps \
         adduser \
-        libidn11 \
-        libicu63 \
-        libssl1.1 \
+        libidn12 \
+        libicu72 \
+        libssl3 \
         lua-bitop \
         lua-dbi-mysql \
         lua-dbi-postgresql \
@@ -32,15 +34,14 @@ RUN apt-get update \
         lua-zlib \
         lua5.1 \
         lua5.2 \
+        lua5.3 \
+        lua5.4 \
         openssl \
-        prosody \
-        ca-certificates \
-        ssl-cert \
+	prosody \
     && rm -rf /var/lib/apt/lists/*
 
-# Install and configure prosody
-RUN apt-get install -y --no-recommends prosody \
-    && sed -i '1s/^/daemonize = false;\n/' /etc/prosody/prosody.cfg.lua \
+# Configure prosody
+RUN sed -i '1s/^/daemonize = false;\n/' /etc/prosody/prosody.cfg.lua \
     && perl -i -pe 'BEGIN{undef $/;} s/^log = {.*?^}$/log = {\n    {levels = {min = "info"}, to = "console"};\n}/smg' /etc/prosody/prosody.cfg.lua
 
 RUN mkdir -p /var/run/prosody && chown prosody:prosody /var/run/prosody
