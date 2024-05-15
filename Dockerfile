@@ -31,6 +31,7 @@ RUN apt-get update \
         lua-filesystem \
         lua-sec \
         lua-socket \
+        lua-unbound \
         lua-zlib \
         lua5.1 \
         lua5.2 \
