@@ -37,13 +37,16 @@ RUN apt-get update \
         lua5.2 \
         lua5.3 \
         lua5.4 \
+        luarocks \
         openssl \
 	prosody \
+        sudo \
     && rm -rf /var/lib/apt/lists/*
 
+RUN update-alternatives --set lua-interpreter /usr/bin/lua5.4
+
 # Configure prosody
-RUN sed -i '1s/^/daemonize = false;\n/' /etc/prosody/prosody.cfg.lua \
-    && perl -i -pe 'BEGIN{undef $/;} s/^log = {.*?^}$/log = {\n    {levels = {min = "info"}, to = "console"};\n}/smg' /etc/prosody/prosody.cfg.lua
+RUN perl -i -pe 'BEGIN{undef $/;} s/^log = {.*?^}$/log = {\n    {levels = {min = "info"}, to = "console"};\n}/smg' /etc/prosody/prosody.cfg.lua
 
 RUN mkdir -p /var/run/prosody && chown prosody:prosody /var/run/prosody
 
